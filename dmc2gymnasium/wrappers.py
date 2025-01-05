@@ -8,15 +8,15 @@ from dm_env import specs
 import numpy as np
 
 
-def _spec_to_box(spec, dtype=np.float32):
+def _spec_to_box(spec, dtype=np.float64):
     def extract_min_max(s):
-        assert s.dtype == np.float64 or s.dtype == np.float32
+        assert s.dtype == np.float64 or s.dtype == np.float64
         dim = int(np.prod(s.shape))
         if type(s) is specs.Array:
-            bound = np.inf * np.ones(dim, dtype=np.float32)
+            bound = np.inf * np.ones(dim, dtype=np.float64)
             return -bound, bound
         elif type(s) is specs.BoundedArray:
-            zeros = np.zeros(dim, dtype=np.float32)
+            zeros = np.zeros(dim, dtype=np.float64)
             return s.minimum + zeros, s.maximum + zeros
         else:
             raise NotImplementedError(f"Unsupported spec type: {type(s)}")
@@ -32,7 +32,7 @@ def _spec_to_box(spec, dtype=np.float32):
     return spaces.Box(low, high, dtype=dtype)
 
 
-def _flatten_obs(obs, dtype=np.float32):
+def _flatten_obs(obs, dtype=np.float64):
     obs_pieces = []
     for v in obs.values():
         flat = np.array([v]) if np.isscalar(v) else v.ravel()
@@ -79,13 +79,13 @@ class DMCWrapper(core.Env):
 
         # true and normalised action spaces
         self._true_action_space = _spec_to_box(
-            [self._env.action_spec()], np.float32
+            [self._env.action_spec()], np.float64
         )
         self._norm_action_space = spaces.Box(
             low=-1.0,
             high=1.0,
             shape=self._true_action_space.shape,
-            dtype=np.float32,
+            dtype=np.float64,
         )
 
         # create observation space
@@ -132,7 +132,7 @@ class DMCWrapper(core.Env):
         norm_delta = self._norm_action_space.high - self._norm_action_space.low
         action = (action - self._norm_action_space.low) / norm_delta
         action = action * true_delta + self._true_action_space.low
-        action = action.astype(np.float32)
+        action = action.astype(np.float64)
         return action
 
     @property
