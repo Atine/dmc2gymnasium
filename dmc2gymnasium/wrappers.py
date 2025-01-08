@@ -73,8 +73,8 @@ class DMCWrapper(core.Env):
             domain_name=domain_name,
             task_name=task_name,
             task_kwargs=task_kwargs,
-            environment_kwargs=environment_kwargs,
             visualize_reward=visualise_reward,
+            environment_kwargs=environment_kwargs,
         )
 
         # true and normalised action spaces
@@ -192,7 +192,8 @@ class DMCWrapper(core.Env):
         time_step = self._env.reset()
         self.current_state = _flatten_obs(time_step.observation)
         obs = self._get_obs(time_step)
-        return obs, {}
+        info = {"internal_state": self._env.physics.get_state().copy()}
+        return obs, info
 
     def render(self, mode="rgb_array", height=None, width=None, camera_id=0):
         assert mode == "rgb_array", (

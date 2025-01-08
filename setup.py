@@ -1,5 +1,6 @@
 import os
-from setuptools import setup, find_packages
+from setuptools import setup
+from setuptools import find_packages
 
 
 def read(fname):
@@ -14,7 +15,8 @@ def read(fname):
 
 VERSION = "0.1"
 BASE_URL = "https://github.com/atine/dmc2gymnasium"
-INSTALL_REQUIRES = ["gymnasium>=0.26.3"]
+INSTALL_REQUIRES = ["gymnasium>=0.26.3", "dm_control"]
+
 
 setup(
     name="dmc2gymnasium",
